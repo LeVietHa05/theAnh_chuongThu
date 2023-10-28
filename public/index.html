@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <!-- <link rel="stylesheet" href="Project.js" defer> -->
+</head>
+
+<body>
+
+  <header>
+    <h2 class="logo">Project</h2>
+    <nav class="navigation">
+      <a href="#">Home</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <div class="wrapper">
+    <div class="form-box input">
+      <h2>Time</h2>
+      <form action="" id="form-contain">
+        <div class="input-box">
+          <span class="icon"><ion-icon name="restaurant-outline"></ion-icon></span>
+          <input type="time" id="Timeeat" required>
+        </div>
+        <div class="input-box">
+          <span class="icon"><ion-icon name="beer-outline"></ion-icon></span>
+          <input type="time" id="Timedrink" required>
+        </div>
+        <button type="submit" class="btn">Submit</button>
+        <div class="in-out">
+          <a href="#" class="user-link">Next</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="form-box user">
+      <h2>Data</h2>
+      <form action="">
+        <div class="input-box">
+          <span class="icon"><ion-icon name="restaurant-outline"></ion-icon></span>
+          <p id="eat" class="label"></p>
+        </div>
+        <div class="input-box">
+          <span class="icon"><ion-icon name="beer-outline"></ion-icon></span>
+          <p id="drink" class="label"></p>
+        </div>
+        <div class="input-box">
+          <span class="icon"><ion-icon name="log-out-outline"></ion-icon></ion-icon></span>
+          <p id="entrances" class="label"></p>
+        </div>
+
+        <div class="in-out">
+          <a href="#" class="input-link">Back</a>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- <section class="about" id="about">
+    <h2 class="heading">About the Project</h2>
+    <div class="about-content">
+        <h3>Purpose</h3>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Est, reprehenderit nesciunt? Est excepturi dolorem molestias et tempore alias, cupiditate distinctio suscipit vel. Porro quas at ex nam quibusdam minima illo eum maxime impedit sapiente. Reiciendis quis id quia corporis totam voluptatum tenetur hic velit incidunt consequuntur, maxime ipsa, eligendi sequi.</p>
+    </div>
+</section> -->
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script>
+  const wrapper = document.querySelector('.wrapper');
+  const inputLink = document.querySelector('.input-link');
+  const userLink = document.querySelector('.user-link');
+
+  userLink.addEventListener('click', () => {
+    wrapper.classList.add('active');
+  });
+
+  inputLink.addEventListener('click', () => {
+    wrapper.classList.remove('active');
+  });
+
+  const userinputtime_eat = document.getElementById('Timeeat');
+  const userinputtime_drink = document.getElementById('Timedrink');
+  const form = document.getElementById('form-contain');
+  var socket = io();
+
+  const eat = document.getElementById('eat');
+  const drink = document.getElementById('drink');
+  const entrances = document.getElementById('entrances');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (userinputtime_eat.value) {
+      socket.emit('time_eat', userinputtime_eat.value);
+    }
+
+    if (userinputtime_drink.value) {
+      socket.emit('time_drink', userinputtime_drink.value);
+    }
+  });
+
+  socket.on("connect", () => {
+    console.log(socket.id);
+  });
+
+  socket.on('time_eat', (eattime) => {
+    eat.innerHTML = eattime;
+  });
+
+  socket.on('time_drink', (drinktime) => {
+    drink.innerHTML = drinktime;
+  });
+  socket.on("water", (data) => {
+    console.log(data);
+    alert(data);
+  });
+  socket.on("feed", (data) => {
+    alert(data); console.log(data);
+  });
+
+  socket.on("/web/envir", (data) => {
+    console.log(data);
+    entrances.innerHTML = data.count;
+  })
+
+  var currentTime ;
+  function refreshTime() {
+    var dateString = new Date().toLocaleString("vi", { timeZone: "Asia/Ho_Chi_Minh" });
+    var formattedString = dateString.replace(", ", " - ");
+    // timeDisplay.innerHTML = formattedString;
+    console.log(formattedString);
+  }
+
+  setInterval(refreshTime, 1000);
+</script>
+
+</html>
